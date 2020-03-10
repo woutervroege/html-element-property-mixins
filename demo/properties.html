@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      import { Properties } from '../src/properties-mixin.js';
+      import { StringConverter, NumberConverter, BooleanConverter, ObjectConverter } from '../../src/utils/attribute-converters/index.js';
+
+      class DemoElement extends Properties(HTMLElement) {
+
+        static get properties() {
+          return {
+            firstName: {
+              observe: true,
+              DOM: true,
+              reflect: true,
+              attributeName: 'first-name',
+              toAttributeConverter: StringConverter.toAttribute,
+              fromAttributeConverter: StringConverter.fromAttribute,
+            },
+            lastName: {
+              observe: true,
+              DOM: true,
+              reflect: true,
+              attributeName: 'last-name',
+              toAttributeConverter: StringConverter.toAttribute,
+              fromAttributeConverter: StringConverter.fromAttribute
+            },
+            age: {
+              observe: true,
+              DOM: true,
+              reflect: true,
+              toAttributeConverter: NumberConverter.toAttribute,
+              fromAttributeConverter: NumberConverter.fromAttribute
+            },
+            married: {
+              observe: true,
+              DOM: true,
+              reflect: true,
+              toAttributeConverter: BooleanConverter.toAttribute,
+              fromAttributeConverter: BooleanConverter.fromAttribute
+            },
+            friends: {
+              observe: true,
+              DOM: true,
+              reflect: true,
+              toAttributeConverter: ObjectConverter.toAttribute,
+              fromAttributeConverter: ObjectConverter.fromAttribute
+            }
+          }
+        }
+
+        propertyChangedCallback(propName, oldValue, newValue) {
+          super.propertyChangedCallback(propName, oldValue, newValue);
+          this.innerHTML = `
+            Hello, ${this.firstName} ${this.lastName}
+          `
+        }
+
+      }
+
+      window.customElements.define('demo-element', DemoElement);
+    </script>
+  </head>
+
+  <body>
+    <demo-element
+      id="demo"
+    ></demo-element>
+
+    <script>
+      demo.firstName = 'Amira';
+      demo.lastName = 'Torres';
+      demo.age = 42;
+      demo.married = true;
+      demo.friends = ['Marina', 'Jasmine'];
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      import { ObservedProperties } from '../src/observed-properties-mixin.js';
+      
+      class DemoElement extends ObservedProperties(HTMLElement) {
+
+        static get observedProperties() {
+          return ['firstName', 'lastName', 'age', 'friends']
+        }
+
+        propertyChangedCallback(propName, oldValue, newValue) {
+          console.info(`propertyChangedCallback, ${propName} changed from ${oldValue} to ${newValue}`);
+          this.innerHTML = `
+            Hello, ${this.firstName} ${this.lastName} (${this.age} years)
+          `
+        }
+
+        get firstName() {
+          return this._firstName;
+        }
+
+        set firstName(name) {
+          this._firstName = name.toUpperCase();
+        }
+
+      }
+
+      window.customElements.define('demo-element', DemoElement);
+    </script>
+  </head>
+
+  <body>
+    <demo-element id="demo"></demo-element>
+
+    <script>
+      demo.firstName = 'John';
+      demo.lastName = 'Doe';
+      demo.age = '50';
+    </script>
+
+</body>
+</html>

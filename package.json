@@ -1,0 +1,35 @@
+{
+  "name": "html-element-property-mixins",
+  "version": "0.9.0",
+  "description": "A collection of mixins extending HTMLElement with properties.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "es-dev-server --app-index demo/index.html --http2 --node-resolve --watch --open",
+    "start:compatibility": "es-dev-server --app-index demo/index.html --http2 --compatibility --node-resolve --watch --open",
+    "lint": "eslint --ext .js . --ignore-path .gitignore",
+    "format": "eslint --ext .js . --fix --ignore-path .gitignore",
+    "release": "release-it"
+  },
+  "author": "Wouter Vroege",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/woutervroege/html-element-property-mixins/issues"
+  },
+  "homepage": "https://github.com/woutervroege/html-element-property-mixins#readme",
+  "devDependencies": {
+    "es-dev-server": "^1.40.0",
+    "eslint": "^6.6.0",
+    "husky": "^3.0.9",
+    "release-it": "^12.6.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run format"
+    }
+  },
+  "release-it": {
+    "github": {
+      "release": true
+    }
+  }
+}

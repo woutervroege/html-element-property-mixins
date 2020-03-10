@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      import { ReflectedProperties } from '../src/reflected-properties-mixin.js';
+      import { ObservedProperties } from '../src/observed-properties-mixin.js';
+      import { StringConverter, NumberConverter, BooleanConverter, ObjectConverter } from '../../src/utils/attribute-converters/index.js';
+
+      class DemoElement extends ReflectedProperties(ObservedProperties(HTMLElement)) {
+
+        static get observedProperties() {
+          return ['firstName', 'friends', 'age', 'married']
+        }
+
+        static get reflectedProperties() {
+          return ['firstName', 'friends', 'age', 'married']
+        }
+
+        static get propertyAttributeNames() {
+          return {
+            firstName: 'first-name',
+          }
+        }
+
+        propertyChangedCallback(propName, oldValue, newValue) {
+          super.propertyChangedCallback(propName, oldValue, newValue);
+          this.innerHTML = `
+            Hello, ${this.firstName}!<br>
+            You are ${this.age} years old and ${this.married ? 'married' : 'single'}.<br>
+            Your friends are ${this.friends}.
+          `
+        }
+
+        static get propertyToAttributeConverters() {
+          return {
+            firstName: StringConverter.toAttribute,
+            age: NumberConverter.toAttribute,
+            married: BooleanConverter.toAttribute,
+            friends: ObjectConverter.toAttribute,
+          }
+        }
+
+      }
+
+      window.customElements.define('demo-element', DemoElement);
+    </script>
+  </head>
+
+  <body>
+    <demo-element id="demo"></demo-element>
+
+    <script>
+      demo.firstName = 'John';
+      demo.age = 50;
+      demo.friends = ['Joseph', 'Jane', 'Alicia']
+      demo.married = true;
+    </script>
+
+</body>
+</html>

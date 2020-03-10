@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      import { DOMProperties } from '../src/dom-properties-mixin.js';
+      import { StringConverter, NumberConverter, BooleanConverter, ObjectConverter } from '../../src/utils/attribute-converters/index.js';
+      
+      class DemoElement extends DOMProperties(HTMLElement) {
+
+        static get DOMProperties() {
+          return ['firstName', 'married', 'age', 'friends']
+        }
+
+        static get propertyAttributeNames() {
+          return {
+            firstName: 'first-name',
+          }
+        }
+
+        static get propertyFromAttributeConverters() {
+          return {
+            firstName: StringConverter.fromAttribute,
+            age: NumberConverter.fromAttribute,
+            married: BooleanConverter.fromAttribute,
+            friends: ObjectConverter.fromAttribute,
+          }
+        }
+
+        attributeChangedCallback(attrName, oldValue, newValue) {
+          super.attributeChangedCallback(attrName, oldValue, newValue);
+          this.innerHTML = `
+            Hello, ${this.firstName}!<br>
+            You are ${this.age} years old and ${this.married ? 'married' : 'single'}.<br>
+            Your friends are ${this.friends}.
+          `;
+        }
+
+        get firstName() {
+          return this._firstName;
+        }
+        
+        set firstName(val) {
+          this._firstName = val.toLowerCase();
+        }
+
+      }
+
+      window.customElements.define('demo-element', DemoElement);
+    </script>
+  </head>
+
+  <body>
+    <demo-element
+      age="10"
+      first-name="John"
+      married
+      friends='["Matthew", "Jane", "Alicia"]'
+    ></demo-element>
+</body>
+</html>
