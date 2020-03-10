@@ -9,11 +9,11 @@
       class DemoElement extends ReflectedProperties(ObservedProperties(HTMLElement)) {
 
         static get observedProperties() {
-          return ['firstName', 'friends', 'age', 'married']
+          return ['name', 'firstName', 'friends', 'age', 'married']
         }
 
         static get reflectedProperties() {
-          return ['firstName', 'friends', 'age', 'married']
+          return ['name', 'firstName', 'friends', 'age', 'married']
         }
 
         static get propertyAttributeNames() {
@@ -50,6 +50,7 @@
     <demo-element id="demo"></demo-element>
 
     <script>
+      demo.name = 'Bla';
       demo.firstName = 'John';
       demo.age = 50;
       demo.friends = ['Joseph', 'Jane', 'Alicia']
