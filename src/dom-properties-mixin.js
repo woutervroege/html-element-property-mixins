@@ -13,7 +13,7 @@ export const DOMProperties = (SuperClass) => class extends SuperClass {
   static get observedAttributes() {
     const observedAttributes = [];
     const DOMProps = this.DOMProperties || [];
-    for(let i in DOMProps) observedAttributes.push(this.propertyAttributeNames[DOMProps[i]] || DOMProps[i].toLowerCase());
+    for(let i in DOMProps) observedAttributes.push((this.propertyAttributeNames || {})[DOMProps[i]] || DOMProps[i].toLowerCase());
     return observedAttributes;
   }
 
