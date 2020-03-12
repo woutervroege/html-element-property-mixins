@@ -13,7 +13,7 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
 
   static __saveInitialPropertyValues() {
     this.constructor.__initialPropertyValues = new Map();
-    this.constructor.observedProperties.map(propName => this.constructor.__initialPropertyValues.set(propName, this[propName]));
+    (this.constructor.observedProperties || []).map(propName => this.constructor.__initialPropertyValues.set(propName, this[propName]));
   }
 
   static __setInitialPropertyValues() {
