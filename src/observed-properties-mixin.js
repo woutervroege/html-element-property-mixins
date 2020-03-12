@@ -23,11 +23,13 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
   }
 
   static __initProperties() {
-    const observedProps = this.constructor.observedProperties || {};
+    this.constructor.__propertyAccessors = {};
+    const observedProps = this.constructor.observedProperties || [];
     observedProps.map(propName => this.constructor.__initProperty.call(this, propName));
   }
 
   static __initProperty(propName) {
+    this.constructor.__propertyAccessors[propName] = this.__getPropertyDescriptor(this, propName);
     Object.defineProperty(this, propName, {      
       set(val) { this.constructor.__setProperty.call(this, propName, val); },
       get() { return this.constructor.__getProperty.call(this, propName); },
@@ -35,13 +37,13 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
   }
 
   static __getProperty(propName) {
-    const customAccessors = Object.getOwnPropertyDescriptors(this.constructor.prototype)[propName] || {};
+    const customAccessors = this.constructor.__propertyAccessors[propName] || {};
     if(customAccessors.get) return customAccessors.get.call(this, propName);
     return this[`#${propName}`];
   }
 
   static __setProperty(propName, newValue) {
-    const customAccessors = Object.getOwnPropertyDescriptors(this.constructor.prototype)[propName] || {};
+    const customAccessors = this.constructor.__propertyAccessors[propName] || {};
     const oldValue = this[propName];
     if(customAccessors.set) customAccessors.set.call(this, newValue);
     else this[`#${propName}`] = newValue;  
@@ -51,6 +53,11 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
   static __propertyValueChanged(propName, oldValue, newValue) {
     if(oldValue === newValue) return;
     this.propertyChangedCallback && this.propertyChangedCallback(propName, oldValue, newValue);
+  }
+
+  __getPropertyDescriptor(obj, key) {
+    if(!obj) return;
+    return Object.getOwnPropertyDescriptor(obj, key) || this.__getPropertyDescriptor(Object.getPrototypeOf(obj), key)
   }
 
 };
