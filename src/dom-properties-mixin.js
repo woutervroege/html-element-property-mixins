@@ -27,7 +27,7 @@ export const DOMProperties = (SuperClass) => class extends SuperClass {
   static __saveInitialAttributeValues() {
     const attrValues = new Map();
     this.getAttributeNames().map(attrName => {
-      if(this.constructor.DOMProperties.indexOf(attrName) !== -1) attrValues.set(attrName, this.getAttribute(attrName));
+      attrValues.set(attrName, this.getAttribute(attrName));
     });
     this.constructor.__initialAttributeValues = attrValues;
   }
