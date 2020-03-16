@@ -14,6 +14,14 @@ $ npm install html-element-property-mixins
 3. **[ReflectedProperties](#ReflectedProperties)** enables property to attribute synchonisation.
 4. **[Properties](#Properties)** combines all three above.
 
+Furthermore, we created a bunch of addons:
+
+1. **[PropertiesChangedCallback](#PropertiesChangedCallback)** Debounces / batches property changes for efficient DOM-rendering.
+2. **[PropertyChangedHandler](#PropertyChangedHandler)** enables change handlers methods for property changes.
+3. **[PropertiesChangedHandler](#PropertiesChangedHandler)** enables change handlers methods for multiple property changes.
+
+## Mixins
+
 ### ObservedProperties
 
 ```javascript
@@ -287,3 +295,141 @@ class DemoElement extends Properties(HTMLElement) {
 
 }
 ```
+
+If you use the [PropertyChangedHandler](#PropertyChangedHandler) addon, you can add 'changedHandler' to your config:
+
+```javascript
+class DemoElement extends PropertyChangedHandler(Properties(HTMLElement)) {
+
+  static get properties() {
+    return {
+      age: {
+        observe: true,
+        changedHandler: '_firstNameChanged',
+      }
+    }
+  }
+
+  _firstNameChanged(oldValue, newValue) {
+    //custom handler here!
+  }
+
+}
+```
+
+
+## Addons
+
+### PropertiesChangedCallback
+```javascript
+import { ObservedProperties } from 'html-element-property-mixins';
+import { PropertiesChangedCallback } from 'html-element-property-mixins/src/addons';
+
+```
+
+When declaring observed properties using the `observedProperties` array, property changes are fired each time a a property changes using the `propertyChangedCallback`. For efficiency reasons (e.g. when rendering DOM), the `propertiesChangedCallback` (plural!) can be used. This callback is debounced by cancel / requestAnimationFrame on every property change. In the following example, `render` is invoked only once:
+
+```javascript
+import { PropertiesChangedCallback } from 'html-element-property-mixins/src/addons';
+import { ObservedProperties } from 'html-element-property-mixins';
+
+class DemoElement extends PropertiesChangedCallback(ObservedProperties(HTMLElement)) {
+
+  constructor() {
+    super();
+    this._renderCount = 0;
+  }
+
+  static get observedProperties() {
+    return ['firstName', 'lastName', 'age'];
+  }
+
+  propertiesChangedCallback(propNames, oldValues, newValues) {
+    this._renderCount++;
+    this.render();
+  }
+
+  render() {
+    this.innerHTML = `
+      Hello, ${this.firstName} ${this.lastName} (${this.age} years).<br>
+      Render Count = ${this._renderCount}. 
+    `
+  }
+
+  constructor() {
+    super();
+    this.firstName = 'Amina';
+    this.lastName = 'Hamzaoui';
+    this.age = 24;
+  }
+
+}
+```
+
+### PropertyChangedHandler
+
+```javascript
+import { ObservedProperties } from 'html-element-property-mixins';
+import { PropertyChangedHandler } from 'html-element-property-mixins/src/addons';
+```
+
+Value changes to properties whitelisted in the `observedProperties` array are always notified using `propertyChangedCallback`. PropertyChangedHandler provides for custom callbacks for property changes:
+
+```javascript
+class DemoElement extends PropertyChangedHandler(ObservedProperties((HTMLElement)) {
+  static get observedProperties() {
+    return ['firstName']
+  }
+
+  static get propertyChangedHandlers() {
+    return {
+      firstName: function(newValue, oldValue) {
+        console.info('firstName changed!', newValue, oldValue);  
+      }
+    }
+  }
+}
+```
+
+Alternatively, callbacks can be passed as string references:
+```javascript
+static get propertyChangedHandlers() {
+  return { firstName: '_firstNameChanged' }
+}
+
+_firstNameChanged(newValue, oldValue) {
+  console.info('firstName changed!', newValue, oldValue);
+}
+```
+
+> **Note**: `PropertyChangedHandler` should always be used in conjunction with `ObservedProperties`.
+
+### PropertiesChangedHandler
+
+```javascript
+import { ObservedProperties } from 'html-element-property-mixins';
+import { PropertiesChangedHandler } from 'html-element-property-mixins/src/addons';
+```
+
+Its plural companion `propertiesChangedHandlers` can be used to invoke a function when one of many properties have changed. Key / value pairs are now swapped. A key refers to the handler function, the value holds an array of the observed properties.
+
+```javascript
+class DemoElement extends PropertiesChangedHandler(ObservedProperties((HTMLElement)) {
+  static get observedProperties() {
+    return ['firstName', 'lastName']
+  }
+
+  static get propertiesChangedHandlers() {
+    return {
+      _nameChanged: ['firstName', 'lastName']
+    }
+  }
+
+  _nameChanged(propNames, newValues, oldValues) {
+    console.info(newValues.firstName, newValues.lastName);
+  }
+
+}
+```
+
+> **Note**: `PropertiesChangedHandler` should always be used in conjunction with `ObservedProperties`.

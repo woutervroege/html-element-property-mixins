@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      import { ObservedProperties } from '../../src/observed-properties-mixin.js';
+      import { PropertyChangedHandler } from '../../src/addons/property-changed-handler-mixin.js';
+      
+      class DemoElement extends PropertyChangedHandler(ObservedProperties(HTMLElement)) {
+
+        static get observedProperties() {
+          return ['firstName', 'age']
+        }
+
+        static get propertyChangedHandlers() {
+          return {
+            firstName: (oldValue, newValue) => console.info('firstName changed!', oldValue, newValue),
+            age: '_ageChanged'
+          }
+        }
+
+        _ageChanged(oldValue, newValue) {
+          console.info('age changed!', oldValue, newValue);
+        }
+
+        propertyChangedCallback(propName, oldValue, newValue) {
+          super.propertyChangedCallback(propName, oldValue, newValue);
+          console.info(`${propName} changed from ${oldValue} to ${newValue}`);
+        }
+
+      }
+
+      window.customElements.define('demo-element', DemoElement);
+    </script>
+  </head>
+
+  <body>
+    <demo-element id="demo"></demo-element>
+
+    <script>
+      demo.firstName = 'John';
+      demo.age = '50';
+    </script>
+
+</body>
+</html>

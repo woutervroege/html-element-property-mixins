@@ -3,9 +3,10 @@
   <head>
     <script type="module">
       import { Properties } from '../src/properties-mixin.js';
+      import { PropertyChangedHandler } from '../src/addons/property-changed-handler-mixin.js';
       import { StringConverter, NumberConverter, BooleanConverter, ObjectConverter } from '../../src/utils/attribute-converters/index.js';
 
-      class DemoElement extends Properties(HTMLElement) {
+      class DemoElement extends PropertyChangedHandler(Properties(HTMLElement)) {
 
         static get properties() {
           return {
@@ -23,7 +24,8 @@
               reflect: true,
               attributeName: 'last-name',
               toAttributeConverter: StringConverter.toAttribute,
-              fromAttributeConverter: StringConverter.fromAttribute
+              fromAttributeConverter: StringConverter.fromAttribute,
+              changedHandler: '_lastNameChanged'
             },
             age: {
               observe: true,
@@ -54,6 +56,10 @@
           this.innerHTML = `
             Hello, ${this.firstName} ${this.lastName}
           `
+        }
+
+        _lastNameChanged(oldValue, newValue) {
+          console.info('Last Name Changed!', oldValue, newValue);
         }
 
       }

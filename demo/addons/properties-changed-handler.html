@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      import { ObservedProperties } from '../../src/observed-properties-mixin.js';
+      import { PropertiesChangedCallback } from '../../src/addons/properties-changed-callback-mixin.js';
+      import { PropertiesChangedHandler } from '../../src/addons/properties-changed-handler-mixin.js';
+      
+      class DemoElement extends PropertiesChangedHandler(PropertiesChangedCallback(ObservedProperties(HTMLElement))) {
+
+        static get observedProperties() {
+          return ['firstName', 'lastName', 'active']
+        }
+
+        static get propertiesChangedHandlers() {
+          return {
+            'render': ['firstName', 'lastName']
+          }
+        }
+
+        render() {
+          this.innerHTML = `Hello, ${this.firstName} ${this.lastName}`
+        }
+
+      }
+
+      window.customElements.define('demo-element', DemoElement);
+    </script>
+  </head>
+
+  <body>
+    <demo-element id="demo"></demo-element>
+
+    <script>
+      customElements.whenDefined('demo-element').then(() => {
+        demo.firstName = 'John';
+        demo.lastName = 'Doe';
+        demo.active = true;
+      })
+    </script>
+
+</body>
+</html>

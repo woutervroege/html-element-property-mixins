@@ -18,6 +18,10 @@ export const Properties = (SuperClass) => class extends ReflectedProperties(DOMP
     return Object.keys(this.__getFilteredProperties.call(this, 'reflect', true));
   }
 
+  static get propertyChangedHandlers() {
+    return this.__getPropertyValues.call(this, 'changedHandler');
+  }
+
   static get propertyAttributeNames() {
     const propValues = {};
     const props = this.properties;
