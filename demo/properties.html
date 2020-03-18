@@ -51,10 +51,19 @@
           }
         }
 
+        constructor() {
+          super();
+          this.firstName = 'John';
+          this.lastName = 'Doe';
+          this.age = 10;
+          this.married = false;
+        }
+
         propertyChangedCallback(propName, oldValue, newValue) {
           super.propertyChangedCallback(propName, oldValue, newValue);
           this.innerHTML = `
-            Hello, ${this.firstName} ${this.lastName}
+            Hello, ${this.firstName} ${this.lastName}!<br>
+            You are ${this.age} years old and ${this.married ? 'married' : 'single'}.<br>
           `
         }
 
@@ -71,15 +80,11 @@
   <body>
     <demo-element
       id="demo"
+      age="31"
+      first-name="Wouter"
+      last-name="Vroege"
+      married
     ></demo-element>
-
-    <script>
-      demo.firstName = 'Amira';
-      demo.lastName = 'Torres';
-      demo.age = 42;
-      demo.married = true;
-      demo.friends = ['Marina', 'Jasmine'];
-    </script>
 
 </body>
 </html>
