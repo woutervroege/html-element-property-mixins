@@ -35,6 +35,7 @@ export const DOMProperties = (SuperClass) => class extends SuperClass {
   static __setInitialAttributeValues() {
     const attrValues = this.constructor.__initialAttributeValues;
     attrValues.forEach((val, attrName) => this.setAttribute(attrName, val));
+    this.constructor.__initialAttributeValuesSet = true;
   }
 
   static __getPropertyNameByAttributeName(attrName) {

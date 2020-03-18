@@ -7,6 +7,7 @@ export const ReflectedProperties = (SuperClass) => class extends SuperClass {
     if(!attrReflects) return;
     const attrName = this.constructor.__getAttributeNameByPropertyName.call(this, propName);
     if(!this.isConnected) return;
+    if(!this.constructor.__initialAttributeValuesSet) return;
     this.constructor.__setDOMAttribute.call(this, attrName, propName, newValue);
   }
 
