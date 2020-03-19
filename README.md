@@ -287,8 +287,8 @@ class DemoElement extends Properties(HTMLElement) {
         DOM: true, //add to `DOMProperties` array
         reflect: true, //add to `reflectedProperties` array
         attributeName: 'first-name', //map to custom attribute name,
-        toAttributeConverter: ParseString.toAttribute, //run when converting to attribute
-        fromAttributeConverter: ParseString.fromAttribute //run when converting from attribute
+        toAttributeConverter: StringConverter.toAttribute, //run when converting to attribute
+        fromAttributeConverter: StringConverter.fromAttribute //run when converting from attribute
       }
     }
   }
