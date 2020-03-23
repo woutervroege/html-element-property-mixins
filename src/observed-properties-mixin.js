@@ -13,12 +13,12 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
   }
 
   static __saveInitialPropertyValues() {
-    this.constructor.__initialPropertyValues = new Map();
-    (this.constructor.observedProperties || []).map(propName => this.constructor.__initialPropertyValues.set(propName, this[propName]));
+    this.__initialPropertyValues = new Map();
+    (this.constructor.observedProperties || []).map(propName => this.__initialPropertyValues.set(propName, this[propName]));
   }
 
   static __setInitialPropertyValues() {
-    this.constructor.__initialPropertyValues.forEach((val, propName) => {
+    this.__initialPropertyValues.forEach((val, propName) => {
       if(val !== undefined) this[propName] = val;
     });
   }
