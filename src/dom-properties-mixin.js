@@ -21,7 +21,7 @@ export const DOMProperties = (SuperClass) => class extends SuperClass {
     if(oldValue === newValue) return;
     const propName = this.constructor.__getPropertyNameByAttributeName.call(this, attrName);
     if(!propName) return;
-    this.constructor.__setDOMProperty.call(this, propName, this.getAttribute(attrName));
+    this.constructor.__setDOMProperty.call(this, propName, oldValue, this.getAttribute(attrName));
   }
 
   static __saveInitialAttributeValues() {
@@ -42,10 +42,10 @@ export const DOMProperties = (SuperClass) => class extends SuperClass {
     for(let i in DOMPropertyNames) if(DOMPropertyNames[i].toLowerCase() === attrName) return DOMPropertyNames[i];
   }
 
-  static __setDOMProperty(propName, value) {
+  static __setDOMProperty(propName, oldValue, value) {
     const converters = this.constructor.propertyFromAttributeConverters || {};
     const converter = converters[propName];
-    if(converter) value = converter.call(this, this[propName], value);
+    if(converter) value = converter.call(this, oldValue, value);
     this[propName] = value;
   }
 
