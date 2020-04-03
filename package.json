@@ -28,10 +28,5 @@
     "hooks": {
       "pre-commit": "npm run format"
     }
-  },
-  "release-it": {
-    "github": {
-      "release": true
-    }
   }
 }
