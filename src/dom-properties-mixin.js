@@ -26,13 +26,16 @@ export const DOMProperties = (SuperClass) => class extends SuperClass {
 
   static __saveInitialAttributeValues() {
     const attrValues = new Map();
-    for(var attrName in this.attributes) attrValues.set(attrName, this.getAttribute(attrName));
+    const attributes = Array.from(this.attributes);
+    for(var i in attributes) attrValues.set(attributes[i], this.getAttribute(attributes[i]))
     this.__initialAttributeValues = attrValues;
   }
 
   static __setInitialAttributeValues() {
     const attrValues = this.__initialAttributeValues;
-    attrValues.forEach((val, attrName) => this.setAttribute(attrName, val));
+    attrValues.forEach((val, attrName) => {
+      if(val !== null) this.setAttribute(attrName, val)
+    })
   }
 
   static __getPropertyNameByAttributeName(attrName) {
