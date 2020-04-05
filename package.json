@@ -1,6 +1,6 @@
 {
   "name": "html-element-property-mixins",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "A collection of mixins extending HTMLElement with properties.",
   "main": "src/index.js",
   "scripts": {
