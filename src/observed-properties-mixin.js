@@ -7,7 +7,6 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
   }
 
   connectedCallback() {
-    this.constructor.__propertiesInited = true;
     super.connectedCallback && super.connectedCallback();
     this.constructor.__setInitialPropertyValues.call(this);
   }
