@@ -1,15 +1,5 @@
 export const DOMProperties = (SuperClass) => class extends SuperClass {
 
-  constructor() {
-    super();
-    this.constructor.__saveInitialAttributeValues.call(this);
-  }
-
-  connectedCallback() {
-    super.connectedCallback && super.connectedCallback();
-    this.constructor.__setInitialAttributeValues.call(this);
-  }
-
   static get observedAttributes() {
     const observedAttributes = [];
     const DOMProps = this.DOMProperties || [];
@@ -22,20 +12,6 @@ export const DOMProperties = (SuperClass) => class extends SuperClass {
     const propName = this.constructor.__getPropertyNameByAttributeName.call(this, attrName);
     if(!propName) return;
     this.constructor.__setDOMProperty.call(this, propName, this[propName], newValue);
-  }
-
-  static __saveInitialAttributeValues() {
-    const attrValues = new Map();
-    const attributes = Array.from(this.attributes);
-    for(var i in attributes) attrValues.set(attributes[i], this.getAttribute(attributes[i]))
-    this.__initialAttributeValues = attrValues;
-  }
-
-  static __setInitialAttributeValues() {
-    const attrValues = this.__initialAttributeValues;
-    attrValues.forEach((val, attrName) => {
-      if(val !== null) this.setAttribute(attrName, val)
-    })
   }
 
   static __getPropertyNameByAttributeName(attrName) {
