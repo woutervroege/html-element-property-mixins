@@ -2,12 +2,13 @@ export const ReflectedProperties = (SuperClass) => class extends SuperClass {
 
   propertyChangedCallback(propName, oldValue, newValue) {
     super.propertyChangedCallback && super.propertyChangedCallback(propName, oldValue, newValue);
+    if(!this.isConnected) return;
+
     const reflectedProps = this.constructor.reflectedProperties || {};
     const attrReflects = reflectedProps.indexOf(propName) !== -1;
     if(!attrReflects) return;
+    
     const attrName = this.constructor.__getAttributeNameByPropertyName.call(this, propName);
-    if(!this.isConnected) return;
-    if(!this.constructor.__propertiesInited) return;
     this.constructor.__setDOMAttribute.call(this, attrName, propName, newValue);
   }
 
