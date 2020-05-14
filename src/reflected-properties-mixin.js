@@ -20,7 +20,7 @@ export const ReflectedProperties = (SuperClass) => class extends SuperClass {
   }
 
   static __getAttributeNameByPropertyName(propName) {
-    const reflectedProps = this.constructor.reflectedProperties || {};
+    const reflectedProps = this.constructor.reflectedProperties || [];
     const attrNames = this.constructor.propertyAttributeNames || {};
     if(reflectedProps.indexOf(propName) === -1) return;
     const attrName = attrNames[propName] || propName.toLowerCase();
