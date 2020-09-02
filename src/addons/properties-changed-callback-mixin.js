@@ -7,13 +7,12 @@ export const PropertiesChangedCallback = (SuperClass) => class extends SuperClas
   }
 
   static __addChangedProperty(propName, oldValue) {
-    window.cancelAnimationFrame(this.__propertiesChangedCallbackDebouncer);
-    const changedProps = this.__changedProperties;
-    if(!changedProps.has(propName)) changedProps.set(propName, oldValue);
-    this.__propertiesChangedCallbackDebouncer = window.requestAnimationFrame(this.constructor.__invokeCallback.bind(this));
+    if(!this.__changedProperties.has(propName)) this.__changedProperties.set(propName, oldValue);
+    window.requestAnimationFrame(this.constructor.__invokeCallback.bind(this));
   }
 
   static __invokeCallback() {
+    if(this.__changedProperties.size === 0) return;
     const oldValues = {};
     const newValues = {};
     this.__changedProperties.forEach((oldValue, propName) => oldValues[propName] = oldValue);
