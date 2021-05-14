@@ -8,7 +8,7 @@ export const PropertiesChangedCallback = (SuperClass) => class extends SuperClas
 
   static __addChangedProperty(propName, oldValue) {
     if(!this.__changedProperties.has(propName)) this.__changedProperties.set(propName, oldValue);
-    window.requestAnimationFrame(this.constructor.__invokeCallback.bind(this));
+    window.setTimeout(this.constructor.__invokeCallback.bind(this));
   }
 
   static __invokeCallback() {
