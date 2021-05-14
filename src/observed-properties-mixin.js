@@ -58,7 +58,9 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
 
   __getPropertyDescriptor(obj, key) {
     if(!obj) return;
-    return Object.getOwnPropertyDescriptor(obj, key) || this.__getPropertyDescriptor(Object.getPrototypeOf(obj), key)
+    const item = Object.getOwnPropertyDescriptor(obj, key);
+    if(item && !item.value) return item;
+    return this.__getPropertyDescriptor(Object.getPrototypeOf(obj), key);
   }
 
 };
