@@ -9,7 +9,7 @@
       class DemoElement extends PropertiesChangedHandler(PropertiesChangedCallback(ObservedProperties(HTMLElement))) {
 
         static get observedProperties() {
-          return ['firstName', 'lastName', 'active']
+          return ['firstName', 'lastName']
         }
 
         static get propertiesChangedHandlers() {
@@ -35,7 +35,6 @@
       customElements.whenDefined('demo-element').then(() => {
         demo.firstName = 'John';
         demo.lastName = 'Doe';
-        demo.active = true;
       })
     </script>
 
