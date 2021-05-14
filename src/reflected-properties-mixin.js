@@ -24,7 +24,7 @@ export const ReflectedProperties = (SuperClass) => class extends SuperClass {
   static __setDOMAttribute(attrName, propName, value) {
     const converters = this.constructor.propertyToAttributeConverters || {};
     const converter = converters[propName];
-    if(converter) value = converter.call(this, value)
+    if(converter) value = converter.call(this, value);
     if(value === null || value === undefined) return this.removeAttribute(attrName);
     this.setAttribute(attrName, value);
   }

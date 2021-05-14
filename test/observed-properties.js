@@ -26,7 +26,7 @@ describe('default', () => {
     chai.expect(el._changedProps.name[2]).to.equal('Giacomo');
   });
 
-})
+});
 
 describe('custom getter', () => {
     
@@ -58,7 +58,7 @@ describe('custom getter', () => {
     chai.expect(el._changedProps.name[2]).to.equal('giacomo');
   });
 
-})
+});
 
 describe('custom setter', () => {
     
@@ -89,14 +89,14 @@ describe('custom setter', () => {
     chai.expect(el._changedProps.name[2]).to.equal('GIACOMO');
   });
 
-})
+});
 
 function generateElementName() {
   var result = '';
   var characters = 'abcdefghijklmnopqrstuvwxyz';
   var charactersLength = characters.length;
   for ( var i = 0; i < 16; i++ ) {
-     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return `${result}-element`;
 } 
