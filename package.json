@@ -7,7 +7,7 @@
     "start": "es-dev-server --app-index demo/index.html --http2 --node-resolve --watch --open",
     "start:compatibility": "es-dev-server --app-index demo/index.html --http2 --compatibility --node-resolve --watch --open",
     "lint": "eslint --ext .js . --ignore-path .gitignore",
-    "format": "eslint --ext .js . --fix --ignore-path .gitignore",
+    "format": "eslint --ext .js src/ --fix --ignore-path .gitignore",
     "release": "release-it"
   },
   "author": "Wouter Vroege",
