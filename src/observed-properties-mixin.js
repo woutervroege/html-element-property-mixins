@@ -52,7 +52,6 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
   
   static __propertyValueChanged(propName, oldValue, newValue) {
     if(oldValue === newValue) return;
-    try { if(JSON.stringify(oldValue) === JSON.stringify(newValue)) return; } catch(e) {};
     this.propertyChangedCallback && this.propertyChangedCallback(propName, oldValue, newValue);
   }
 
