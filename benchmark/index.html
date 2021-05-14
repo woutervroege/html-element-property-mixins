@@ -1,0 +1,135 @@
+<html>
+<body>
+<script type="module">
+
+  const ObservedProperties = (SuperClass) => class extends SuperClass {
+
+  constructor() {
+    super();
+    this.constructor.__saveInitialPropertyValues.call(this);
+    this.constructor.__initProperties.call(this);
+  }
+
+  connectedCallback() {
+    super.connectedCallback && super.connectedCallback();
+    this.constructor.__setInitialPropertyValues.call(this);
+  }
+
+  static __saveInitialPropertyValues() {
+    this.__initialPropertyValues = new Map();
+    (this.constructor.observedProperties || []).map(propName => this.__initialPropertyValues.set(propName, this[propName]));
+  }
+
+  static __setInitialPropertyValues() {
+    this.__initialPropertyValues.forEach((val, propName) => {
+      if(val !== undefined) this[propName] = val;
+    });
+  }
+
+  static __initProperties() {
+    this.constructor.__propertyAccessors = {};
+    const observedProps = this.constructor.observedProperties || [];
+    observedProps.map(propName => this.constructor.__initProperty.call(this, propName));
+  }
+
+  static __initProperty(propName) {
+    this.constructor.__propertyAccessors[propName] = this.__getPropertyDescriptor(this, propName);
+    Object.defineProperty(this, propName, {      
+      set(val) { this.constructor.__setProperty.call(this, propName, val); },
+      get() { return this.constructor.__getProperty.call(this, propName); },
+    });
+  }
+
+  static __getProperty(propName) {
+    const customAccessors = this.constructor.__propertyAccessors[propName] || {};
+    if(customAccessors.get) return customAccessors.get.call(this, propName);
+    return this[`#${propName}`];
+  }
+
+  static __setProperty(propName, newValue) {
+    const customAccessors = this.constructor.__propertyAccessors[propName] || {};
+    const oldValue = this[propName];
+    if(customAccessors.set) customAccessors.set.call(this, newValue);
+    else this[`#${propName}`] = newValue;  
+    this.constructor.__propertyValueChanged.call(this, propName, oldValue, this[propName]);
+  }
+
+  static __propertyValueChanged(propName, oldValue, newValue) {
+    if(oldValue === newValue) return;
+    try { if(JSON.stringify(oldValue) === JSON.stringify(newValue)) return; } catch(e) {};
+    this.propertyChangedCallback && this.propertyChangedCallback(propName, oldValue, newValue);
+  }
+
+  __getPropertyDescriptor(obj, key) {
+    if(!obj) return;
+    return Object.getOwnPropertyDescriptor(obj, key) || this.__getPropertyDescriptor(Object.getPrototypeOf(obj), key)
+  }
+
+  };
+  
+  const template = document.createElement('template');
+  template.innerHTML = `
+    <style>
+      * {
+        font-size: 200%;
+      }
+
+      span {
+        width: 4rem;
+        display: inline-block;
+        text-align: center;
+      }
+
+      button {
+        width: 4rem;
+        height: 4rem;
+        border: none;
+        border-radius: 10px;
+        background-color: seagreen;
+        color: white;
+      }
+    </style>
+    <button id="dec">-</button>
+    <span id="count"></span>
+    <button id="inc">+</button>`;
+
+
+class MyCounter extends ObservedProperties(HTMLElement) {
+
+  constructor() {
+    super();
+    this.count = 0;
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+  }
+
+  static get observedProperties() {
+    return ['count'];
+  }
+
+  propertyChangedCallback() {
+    this.update();
+  }
+
+  connectedCallback() {
+    this.update();
+    this.shadowRoot.getElementById('inc').onclick = () => this.count++;
+    this.shadowRoot.getElementById('dec').onclick = () => this.count--;
+  }
+
+  update() {
+    if(this.shadowRoot) this.shadowRoot.getElementById('count').innerHTML = this.count;
+  }
+}
+
+customElements.define('my-counter', MyCounter);
+  
+  import * as bench from '/bench.js';
+  bench.start();
+  for (let i = 0; i < 50; i++) {
+    document.body.appendChild(document.createElement('my-counter'));
+  }
+  bench.stop();
+</script>
+</body>
+</html>
