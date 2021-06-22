@@ -18,7 +18,7 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
 
   static __setInitialPropertyValues() {
     this.__initialPropertyValues.forEach((val, propName) => {
-      if(val !== undefined) this[propName] = val;
+      if(val !== undefined && this[propName] === undefined) this[propName] = val;
     });
   }
 
@@ -29,7 +29,7 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
   }
 
   static __initProperty(propName) {
-    this.constructor.__propertyAccessors[propName] = this.__getPropertyDescriptor(this, propName);
+    this.constructor.__propertyAccessors[propName] = this.__getPropertyDescriptor(propName);
     Object.defineProperty(this, propName, {      
       set(val) { this.constructor.__setProperty.call(this, propName, val); },
       get() { return this.constructor.__getProperty.call(this, propName); },
@@ -55,11 +55,17 @@ export const ObservedProperties = (SuperClass) => class extends SuperClass {
     this.propertyChangedCallback && this.propertyChangedCallback(propName, oldValue, newValue);
   }
 
-  __getPropertyDescriptor(obj, key) {
-    if(!obj) return;
-    const item = Object.getOwnPropertyDescriptor(obj, key);
-    if(item && !item.value) return item;
-    return this.__getPropertyDescriptor(Object.getPrototypeOf(obj), key);
+  __getPropertyDescriptor(key) {
+    const values = [];
+    var obj = this;
+    while(obj) {
+      if(Object.getOwnPropertyDescriptor(obj, key)) values.push(Object.getOwnPropertyDescriptor(obj, key));
+      obj = Object.getPrototypeOf(obj);
+    }
+    const getter = values.find(item => item.get);
+    const setter = values.find(item => item.set);
+    const value = values.find(item => item.value);
+    return {get: getter?.get, set: setter?.set, value: value?.value};
   }
 
 };
